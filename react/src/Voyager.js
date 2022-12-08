@@ -57,7 +57,7 @@ const VoyagerComponent = ({ data }) => {
         result = graphqlSync({schema:localSchema, source: getIntrospectionQuery()});
     } else {
       try{
-        const response = await axios.get(data)
+        const response = await axios.get(data.url)
         console.log("response.data",response.data)
         schema = buildSchema(response.data);
         result = graphqlSync({schema, source: getIntrospectionQuery()});
