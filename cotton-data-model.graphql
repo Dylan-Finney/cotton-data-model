@@ -2533,11 +2533,14 @@ type individual {
   """"""
   credentials: [PrifinaCredential]
 
-  """"""
-  systemProfile: systemProfile
+  """Private Account and ID Details that individual can create/access/edit"""
+  accountProfile: accountProfile
 
-  """"""
-  personProfile: personProfile
+  """Private and/or Public and sharable details, editable by individual"""
+  coreProfile: coreProfile
+
+  """Private and/or Public and sharable details, editable by individual"""
+  roleProfiles: [prifinaRoleProfiles]
 
   """"""
   activityData: ActivityData
@@ -2643,7 +2646,16 @@ enum prifinaPhoneNumType {
 }
 
 """"""
-type systemProfile {
+type accountProfile {
+  """"""
+  username: String
+
+  """"""
+  password: String
+}
+
+""""""
+type coreProfile {
   """"""
   name: String
 
@@ -2661,6 +2673,9 @@ type systemProfile {
 
   """"""
   email: [prifinaEmail]
+
+  """User's birthdate"""
+  birthdate: String
 
   """"""
   phoneNum: [prifinaPhoneNum]
@@ -2736,72 +2751,251 @@ type prifinaSubscriptionDetails {
   active: Boolean
 }
 
+union prifinaRoleProfiles = prifinaRoleSocial | prifinaRoleEducation | prifinaRoleProfessional
+
 """"""
-type personProfile {
+type prifinaRoleSocial {
+  """"""
+  contacts: [contact]
+}
+
+""""""
+type prifinaRoleEducation {
+  """"""
+  educationLevel: prifinaRoleEducationLevelEnum
+
+  """"""
+  certificates: [prifinaRoleCertificateType]
+
+  """"""
+  grades: [prifinaRoleEducationGradeType]
+
+  """"""
+  workingHours: [Float]
+}
+
+""""""
+enum prifinaRoleEducationLevelEnum {
+  """"""
+  Unknown
+
+  """"""
+  None
+
+  """"""
+  High_School_or_GED
+
+  """"""
+  Some_College
+
+  """"""
+  Associate_degree
+
+  """"""
+  Bachelor_degree
+
+  """"""
+  Master_degree
+
+  """"""
+  professional_degree
+
+  """"""
+  Doctorate
+}
+
+""""""
+type prifinaRoleCertificateType {
+  """"""
+  title: String
+
+  """"""
+  provider: String
+
+  """"""
+  date: String
+
+  """"""
+  urlLink: String
+}
+
+""""""
+type prifinaRoleEducationGradeType {
+  """"""
+  subject: String
+
+  """"""
+  type: prifinaRoleEducationTypeEnum
+
+  """"""
+  date: String
+
+  """"""
+  result: prifinaGradeResult
+}
+
+""""""
+enum prifinaRoleEducationTypeEnum {
+  """General Certificate of Secondary Education - UK"""
+  GCSE
+
+  """"""
+  A_Level
+
+  """"""
+  Degree
+}
+
+union prifinaGradeResult = prifinaGradeUKNumberResult | prifinaGradeUKLetterResult | prifinaGradeUSALetterResult
+
+""""""
+type prifinaGradeUKNumberResult {
+  """"""
+  result: prifinaGradeUKNumberResultEnum
+}
+
+""""""
+enum prifinaGradeUKNumberResultEnum {
+  """Ungraded"""
+  U
+
+  """9"""
+  NINE
+
+  """8"""
+  EIGHT
+
+  """7"""
+  SEVEN
+
+  """6"""
+  SIX
+
+  """5"""
+  FIVE
+
+  """4"""
+  FOUR
+
+  """3"""
+  THREE
+
+  """2"""
+  TWO
+
+  """1"""
+  ONE
+}
+
+""""""
+type prifinaGradeUKLetterResult {
+  """"""
+  result: prifinaGradeUKLetterResultEnum
+}
+
+""""""
+enum prifinaGradeUKLetterResultEnum {
+  """Ungraded"""
+  U
+
+  """A*"""
+  A_star
+
+  """A"""
+  A
+
+  """B"""
+  B
+
+  """C"""
+  C
+
+  """D"""
+  D
+
+  """E"""
+  E
+
+  """F"""
+  F
+
+  """G"""
+  G
+}
+
+""""""
+type prifinaGradeUSALetterResult {
+  """"""
+  result: prifinaGradeUSALetterResultEnum
+}
+
+""""""
+enum prifinaGradeUSALetterResultEnum {
+  """A+"""
+  A_plus
+
+  """A"""
+  A
+
+  """A-"""
+  A_minus
+
+  """B+"""
+  B_plus
+
+  """B"""
+  B
+
+  """B-"""
+  B_minus
+
+  """C+"""
+  C_plus
+
+  """C"""
+  C
+
+  """C-"""
+  C_minus
+
+  """D+"""
+  D_plus
+
+  """D"""
+  D
+
+  """D-"""
+  D_minus
+
+  """F"""
+  F
+}
+
+""""""
+type prifinaRoleProfessional {
+  """"""
+  employer: [prifinaCompany]
+
+  """"""
+  jobTitle: String
+
+  """"""
+  certificates: [prifinaRoleCertificateType]
+
+  """"""
+  curriculumVitae: prifinaCurriculumVitae
+
+  """"""
+  workingHours: [Float]
+}
+
+union prifinaCompany = prifinaCompanyName | CompanyEntity
+
+""""""
+type prifinaCompanyName {
   """"""
   name: String
-
-  """"""
-  type: personProfileEnum
-
-  """"""
-  profileDetails: prifinaProfileDetails
 }
-
-""""""
-enum personProfileEnum {
-  """Anonymous"""
-  Anonymous
-
-  """Anonymous role specific"""
-  Anonymous_role_specific
-
-  """General Social"""
-  General_Social
-
-  """Real Person General Work"""
-  Real_Person_General_Work
-
-  """Real Person Specific Company Role"""
-  Real_Person_Specific_Company_Role
-
-  """Service Specific"""
-  Service_Specific
-}
-
-union prifinaProfileDetails = GeneralSocialTemplate | GeneralWorkTemplate
-
-""""""
-type GeneralSocialTemplate {
-  """"""
-  interests: [String]
-}
-
-""""""
-type GeneralWorkTemplate {
-  """"""
-  job: String
-}
-
-""""""
-type ActivityData {
-  """ID"""
-  lastApp: Int!
-
-  """"""
-  timestamp: String
-}
-
-""""""
-type Entity {
-  """"""
-  entityID: prifinaEntities
-
-  """"""
-  role: String
-}
-
-union prifinaEntities = CompanyEntity | FamilyEntity | CommunityEntity
 
 """"""
 type CompanyEntity {
@@ -3125,6 +3319,181 @@ enum prifiinaProjectTypeEnum {
   """"""
   Widget
 }
+
+""""""
+type prifinaCurriculumVitae {
+  """"""
+  fullName: String
+
+  """"""
+  address: String
+
+  """"""
+  email: String
+
+  """"""
+  phoneNum: String
+
+  """"""
+  links: [prifinaCurriculumVitaeLink]
+
+  """"""
+  summary: String
+
+  """"""
+  workExperience: [prifinaCurriculumVitaeWorkExperience]
+
+  """"""
+  education: [prifinaCurriculumVitaeEducation]
+
+  """"""
+  keySkills: [String]
+
+  """"""
+  additionalInformation: [String]
+
+  """"""
+  interests: [String]
+
+  """"""
+  references: [prifinaCurriculumVitaeReference]
+}
+
+""""""
+type prifinaCurriculumVitaeLink {
+  """"""
+  name: String
+
+  """"""
+  link: String
+}
+
+""""""
+type prifinaCurriculumVitaeWorkExperience {
+  """"""
+  startDate: String
+
+  """"""
+  endDate: String
+
+  """"""
+  title: String
+
+  """"""
+  employer: String
+
+  """"""
+  summary: String
+
+  """"""
+  duties: [String]
+}
+
+""""""
+type prifinaCurriculumVitaeEducation {
+  """"""
+  issuer: String
+
+  """"""
+  certificate: String
+
+  """"""
+  startDate: String
+
+  """"""
+  endDate: String
+
+  """"""
+  summary: String
+
+  """"""
+  result: prifinaDegreeGradeResult
+
+  """"""
+  results: [prifinaCurriculumVitaeEducationResult]
+
+  """"""
+  additionalDetails: [String]
+}
+
+union prifinaDegreeGradeResult = prifinaDegreeGradePercentResult | prifinaDegreeGradeUKLetterResult
+
+""""""
+type prifinaDegreeGradePercentResult {
+  """"""
+  result: Int
+}
+
+""""""
+type prifinaDegreeGradeUKLetterResult {
+  """"""
+  result: prifinaDegreeGradeUKLetterResultEnum
+}
+
+""""""
+enum prifinaDegreeGradeUKLetterResultEnum {
+  """"""
+  Failed
+
+  """First Class Honours (1st)"""
+  First
+
+  """Second Class Honours - Upper division (2:1)"""
+  Second_Upper
+
+  """Second Class Honours - Lower division (2:2)"""
+  Second_Lower
+
+  """Third Class Honours (3rd)"""
+  Third
+}
+
+""""""
+type prifinaCurriculumVitaeEducationResult {
+  """"""
+  subject: String
+
+  """"""
+  result: prifinaGradeResult
+}
+
+""""""
+type prifinaCurriculumVitaeReference {
+  """"""
+  name: String
+
+  """"""
+  role: String
+
+  """"""
+  company: String
+
+  """"""
+  phoneNum: String
+
+  """"""
+  email: String
+}
+
+""""""
+type ActivityData {
+  """ID"""
+  lastApp: Int!
+
+  """"""
+  timestamp: String
+}
+
+""""""
+type Entity {
+  """"""
+  entityID: prifinaEntities
+
+  """"""
+  role: String
+}
+
+union prifinaEntities = CompanyEntity | FamilyEntity | CommunityEntity
 
 """"""
 type FamilyEntity {
